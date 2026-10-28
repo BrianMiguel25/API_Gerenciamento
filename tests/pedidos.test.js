@@ -13,7 +13,9 @@ beforeEach(() => service.limparParaTestes());
 
 describe('API de gerenciamento de pedidos', () => {
   test('POST cria pedido válido', async () => {
-    const resposta = await request(app).post('/pedidos').send(pedidoValido);
+    const resposta = await request(app)
+      .post('/pedidos')
+      .send(pedidoValido);
 
     if (resposta.status !== 201) {
       throw new Error('O status deveria ser 201');
@@ -28,15 +30,27 @@ describe('API de gerenciamento de pedidos', () => {
     }
   });
 
+  test('POST rejeita tipo de pedido inválido', async () => {
+    const resposta = await request(app)
+      .post('/pedidos')
+      .send({ ...pedidoValido, tipo: 'aviao' });
+
+    if (resposta.status !== 400) {
+      throw new Error('O status deveria ser 400 para tipo inválido');
+    }
+  });
+
   test('POST rejeita dados inválidos', async () => {
-    const resposta = await request(app).post('/pedidos')
+    const resposta = await request(app)
+      .post('/pedidos')
       .send({ ...pedidoValido, cliente: ' ', valor: -1 });
 
     if (resposta.status !== 400) {
       throw new Error('O status deveria ser 400');
     }
 
-    if (!resposta.body.detalhes || resposta.body.detalhes.length === 0) {
+    if (!resposta.body.detalhes ||
+        resposta.body.detalhes.length === 0) {
       throw new Error('Deveria retornar os detalhes dos erros');
     }
   });
@@ -64,7 +78,8 @@ describe('API de gerenciamento de pedidos', () => {
 
   test('PATCH atualiza status', async () => {
     await request(app).post('/pedidos').send(pedidoValido);
-    const resposta = await request(app).patch('/pedidos/1/status')
+    const resposta = await request(app)
+      .patch('/pedidos/1/status')
       .send({ status: 'em_preparacao' });
 
     if (resposta.status !== 200) {
@@ -78,7 +93,8 @@ describe('API de gerenciamento de pedidos', () => {
 
   test('PATCH rejeita transição inválida', async () => {
     await request(app).post('/pedidos').send(pedidoValido);
-    const resposta = await request(app).patch('/pedidos/1/status')
+    const resposta = await request(app)
+      .patch('/pedidos/1/status')
       .send({ status: 'entregue' });
 
     if (resposta.status !== 400) {
