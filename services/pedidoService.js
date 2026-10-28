@@ -1,7 +1,13 @@
-const { validarPedido, validarAtualizacao, validarId } = require('../validators/pedidoValidator');
+
+const {
+  validarPedido,
+  validarAtualizacao,
+  validarId
+} = require('../validators/pedidoValidator');
+
 const { AppError } = require('../utils/AppError');
 
-// Armazenamento em memória, permitido no enunciado.
+// Armazenamento em memória.
 const pedidos = [];
 let proximoId = 1;
 
@@ -9,6 +15,7 @@ function criar(dados) {
   console.log('2 - SERVICE recebeu', dados);
 
   const erros = validarPedido(dados);
+
   if (erros.length > 0) {
     throw new AppError(400, 'Dados inválidos.', erros);
   }
@@ -23,42 +30,66 @@ function criar(dados) {
   };
 
   pedidos.push(pedido);
+
   console.log('3 - SERVICE criou', pedido);
+
   return { ...pedido };
 }
 
 function listar() {
   console.log('2 - SERVICE listando pedidos');
+
   return pedidos.map((pedido) => ({ ...pedido }));
 }
 
 function buscarPorId(id) {
   const idValidado = validarId(id);
+
   const pedido = pedidos.find((item) => item.id === idValidado);
 
   if (!pedido) {
-    throw new AppError(404, 'Pedido com ID ' + idValidado + ' não encontrado.');
+    throw new AppError(
+      404,
+      'Pedido com ID ' + idValidado + ' não encontrado.'
+    );
   }
 
   console.log('2 - SERVICE encontrou', pedido);
+
   return { ...pedido };
 }
 
 function atualizarStatus(id, dados) {
   const idValidado = validarId(id);
+
   const pedido = pedidos.find((item) => item.id === idValidado);
 
   if (!pedido) {
-    throw new AppError(404, 'Pedido com ID ' + idValidado + ' não encontrado.');
+    throw new AppError(
+      404,
+      'Pedido com ID ' + idValidado + ' não encontrado.'
+    );
   }
 
+  // Diagnóstico para identificar o problema no PATCH.
+  console.log('DEBUG - dados recebidos:', dados);
+  console.log('DEBUG - status atual:', pedido.status);
+  console.log('DEBUG - tipo do status:', typeof dados?.status);
+  console.log(
+    'DEBUG - status recebido em JSON:',
+    JSON.stringify(dados?.status)
+  );
+
   const erros = validarAtualizacao(dados, pedido.status);
+
   if (erros.length > 0) {
     throw new AppError(400, 'Atualização inválida.', erros);
   }
 
   pedido.status = dados.status;
+
   console.log('3 - SERVICE atualizou', pedido);
+
   return { ...pedido };
 }
 
@@ -67,4 +98,10 @@ function limparParaTestes() {
   proximoId = 1;
 }
 
-module.exports = { criar, listar, buscarPorId, atualizarStatus, limparParaTestes };
+module.exports = {
+  criar,
+  listar,
+  buscarPorId,
+  atualizarStatus,
+  limparParaTestes
+};
