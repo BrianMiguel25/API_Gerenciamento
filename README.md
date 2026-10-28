@@ -85,13 +85,13 @@ O armazenamento é em memória, permitido pelo enunciado. Os pedidos são apagad
 
 ## Evidências Postman
 
-Crie a pasta `evidencias/` e salve capturas reais mostrando método, URL, corpo (quando houver), resposta e código HTTP:
+As capturas dos testes realizados no Postman estão salvas na pasta `evidencias/`.
 
-1. `01-criacao.png` — POST válido (201).
-2. `02-validacao.png` — POST inválido (400).
-3. `03-listagem.png` — GET `/pedidos` (200).
-4. `04-consulta-inexistente.png` — GET `/pedidos/999` (404).
-5. `05-atualizacao.png` — PATCH de status válido (200).
+1. `01_Criacao.png` — criação de pedido válido (POST, HTTP 201).
+2. `02_Validacao.png` — validação de dados inválidos (POST, HTTP 400).
+3. `03_Listagem.png` — listagem de pedidos (GET, HTTP 200).
+4. `04_Consulta_Inexistente.png` — consulta de pedido inexistente (GET, HTTP 404).
+5. `05_Atualizacao.png` — atualização de status válida (PATCH, HTTP 200).
 
 Para acompanhar o caminho dos dados, deixe o terminal visível: o controller registra a entrada, o service registra os dados recebidos e o pedido criado, seguindo a ideia dos logs do projeto de referência.
 
